@@ -1,9 +1,9 @@
-# Hong Kong Finance Data MCP Server
+# Hong Kong Health Data MCP Server
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/hkopenai/hk-health-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This is an MCP server that provides access to finance related data in Hong Kong through a FastMCP interface.
+This is an MCP server that provides access to health related data in Hong Kong through a FastMCP interface.
 
 ## Features
 
