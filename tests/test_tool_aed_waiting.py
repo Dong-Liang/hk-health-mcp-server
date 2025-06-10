@@ -5,7 +5,6 @@ import json
 
 class TestAEDWaitingTimes(unittest.TestCase):
     JSON_DATA = """{
-  "data": {
     "waitTime": [
       {
         "hospName": "Alice Ho Miu Ling Nethersole Hospital",
@@ -21,9 +20,7 @@ class TestAEDWaitingTimes(unittest.TestCase):
       }
     ],
     "updateTime": "10/6/2025 9:45pm"
-  },
-  "last_updated": "2025-06-10T21:51:49.140640"
-}"""
+  }"""
 
     def setUp(self):
         self.mock_urlopen = patch('urllib.request.urlopen').start()

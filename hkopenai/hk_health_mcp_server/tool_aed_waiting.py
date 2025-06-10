@@ -17,7 +17,7 @@ def fetch_aed_waiting_data(lang: str = 'en') -> List[Dict]:
     data = json.loads(response.read().decode('utf-8'))
     
     # Transform new data format to expected format
-    return data['data']
+    return data
 
 def get_aed_waiting_times(lang: str = 'en') -> Dict:
     """Get current AED waiting times

@@ -7,29 +7,19 @@ This is an MCP server that provides access to finance related data in Hong Kong 
 
 ## Features
 
-1. Monthly statistics on the number of new and active business registrations in Hong Kong
-2. Quarterly statistics on residential mortgage loans in negative equity in Hong Kong
-3. Credit card lending survey results in Hong Kong
-4. Coin cart schedule in Hong Kong
-5. Get list of hotlines for reporting loss of credit card from Hong Kong banks
-6. Get information of Tender Invitation and Notice of Award of Contracts from Hong Kong Monetary Authority
+1. Get current Accident and Emergency Department waiting times by hospital in Hong Kong
 
 ## Examples
 
-* What is the number of new business registered in Hong Kong 2024?
-* What is the negative loan situation in Hong Kong Q1 2025 compare with Q1 2024?
-* Write a commentary about the latest residential mortgage loans in negative equity in Hong Kong
-* How is current Hong Kong economy by referencing credit lending data and residential mortgage loans in negative equity?
+* As a news reporter, you are interested in knowing the current waiting times at hospitals in Hong Kong. Please remind the audience not to abuse the service. Report in Chinese.
 
-Assume chart tool is available:
-
-* Plot a line chart showing trend and number of new business registered each month from Jan to Dec in Hong Kong 2024.
-![](https://raw.githubusercontent.com/hkopenai/hk-finance-mcp-server/refs/heads/main/assets/line_chart.png)
+Sample response
+```
+```
 
 ## Data Source
 
-* Hong Kong Monetary Authority
-* Hong Kong Inland Revenue Department
+* Hong Kong Hospital Authority
 
 ## Setup
 
@@ -55,7 +45,7 @@ To connect this MCP server to Cline using stdio:
 1. Add this configuration to your Cline MCP settings (cline_mcp_settings.json):
 ```json
 {
-  "hk-finance": {
+  "hk-health": {
     "disabled": false,
     "timeout": 3,
     "type": "stdio",
