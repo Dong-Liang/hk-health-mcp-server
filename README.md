@@ -13,10 +13,6 @@ This is an MCP server that provides access to finance related data in Hong Kong 
 
 * As a news reporter, you are interested in knowing the current waiting times at hospitals in Hong Kong. Please remind the audience not to abuse the service. Report in Chinese.
 
-Sample response
-```
-```
-
 ## Data Source
 
 * Hong Kong Hospital Authority
