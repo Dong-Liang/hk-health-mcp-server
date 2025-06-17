@@ -12,17 +12,17 @@ def create_mcp_server():
         description="Get current Accident and Emergency Department waiting times by hospital in Hong Kong"
     )
     def get_aed_waiting_times(
-        lang: Annotated[Optional[str], Field(description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English", enum=["en", "tc", "sc"])] = 'en'
+        lang: Annotated[Optional[str], Field(description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English", json_schema_extra={"enum": ["en", "tc", "sc"]})] = 'en'
     ) -> Dict:
-        return tool_aed_waiting.get_aed_waiting_times(lang)
+        return tool_aed_waiting.get_aed_waiting_times(lang or 'en')
 
     @mcp.tool(
         description="Get current waiting times for new case bookings for specialist outpatient services by specialty and cluster in Hong Kong"
     )
     def get_specialist_waiting_times(
-        lang: Annotated[Optional[str], Field(description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English", enum=["en", "tc", "sc"])] = 'en'
+        lang: Annotated[Optional[str], Field(description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English", json_schema_extra={"enum": ["en", "tc", "sc"]})] = 'en'
     ) -> Dict:
-        return tool_specialist_waiting_time_by_cluster.get_specialist_waiting_times(lang)
+        return tool_specialist_waiting_time_by_cluster.get_specialist_waiting_times(lang or 'en')
 
     return mcp
 def main():
