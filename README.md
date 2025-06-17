@@ -8,10 +8,13 @@ This is an MCP server that provides access to health related data in Hong Kong t
 ## Features
 
 1. Get current Accident and Emergency Department waiting times by hospital in Hong Kong
+2. Get current waiting times for new case bookings for specialist outpatient services by specialty and cluster in Hong Kong
+
 
 ## Examples
 
 * As a news reporter, you are interested in knowing the current waiting times at hospitals in Hong Kong. Please remind the audience not to abuse the service. Report in Chinese.
+* As a healthcare professional, you need to check the current waiting times for specialist outpatient services in different clusters to advise patients on the best options for timely care.
 
 ## Data Source
 
@@ -59,4 +62,3 @@ Tests are available in the `tests/` directory. Run with:
 ```bash
 pytest
 ```
-
