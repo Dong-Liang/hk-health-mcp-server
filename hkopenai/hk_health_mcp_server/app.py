@@ -1,6 +1,6 @@
 import argparse
 from fastmcp import FastMCP
-from hkopenai.hk_health_mcp_server import tool_aed_waiting, tool_specialist_waiting_time_by_cluster
+from hkopenai.hk_health_mcp_server import tool_aed_waiting, tool_specialist_waiting_time_by_cluster, tool_pas_gopc_avg_quota
 from typing import Dict, Annotated, Optional
 from pydantic import Field
 
@@ -23,6 +23,15 @@ def create_mcp_server():
         lang: Annotated[Optional[str], Field(description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English", json_schema_extra={"enum": ["en", "tc", "sc"]})] = 'en'
     ) -> Dict:
         return tool_specialist_waiting_time_by_cluster.get_specialist_waiting_times(lang or 'en')
+
+    @mcp.tool(
+        description="Get average number of general outpatient clinic quotas for the preceding 4 weeks across 18 districts in Hong Kong"
+    )
+    def get_pas_gopc_avg_quota(
+        lang: Annotated[Optional[str], Field(description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English", json_schema_extra={"enum": ["en", "tc", "sc"]})] = 'en',
+        district: Annotated[Optional[str], Field(description="Optional: Filter by district name (e.g., 'Tuen Mun'). If not provided, data for all districts will be returned.")] = ''
+    ) -> Dict:
+        return tool_pas_gopc_avg_quota.get_pas_gopc_avg_quota(lang or 'en', district or '')
 
     return mcp
 def main():

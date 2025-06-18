@@ -9,6 +9,7 @@ This is an MCP server that provides access to health related data in Hong Kong t
 
 1. Get current Accident and Emergency Department waiting times by hospital in Hong Kong
 2. Get current waiting times for new case bookings for specialist outpatient services by specialty and cluster in Hong Kong
+3. Get average number of general outpatient clinic quotas for the preceding 4 weeks across 18 districts in Hong Kong
 
 
 ## Examples
