@@ -24,7 +24,7 @@
 - **Security**: Need to ensure data transmission is secure (HTTPS), and consider authentication mechanisms for API access to prevent abuse.
 
 ## Dependencies
-- **Internal**: The project structure includes separate modules for each MCP tool (e.g., `tool_aed_waiting.py`, `tool_specialist_waiting_time_by_cluster.py`), which depend on a central app module (`app.py`) for routing and initialization.
+- **Internal**: The project structure includes separate modules for each MCP tool (e.g., `tool_aed_waiting.py`, `tool_specialist_waiting_time_by_cluster.py`), which depend on a central app module (`server.py`) for routing and initialization.
 - **External**: Reliance on third-party libraries as listed under Technologies Used. These are specified in `pyproject.toml` for version control and reproducibility.
 - **Data Sources**: Dependency on external health service websites or APIs for raw data, which are subject to change in structure or availability.
 

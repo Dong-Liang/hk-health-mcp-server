@@ -1,13 +1,13 @@
 import unittest
 import unittest.mock as mock
 from unittest.mock import patch
-from hkopenai.hk_health_mcp_server.app import create_mcp_server
+from hkopenai.hk_health_mcp_server.server import create_mcp_server
 
 class TestApp(unittest.TestCase):
-    @patch('hkopenai.hk_health_mcp_server.app.FastMCP')
-    @patch('hkopenai.hk_health_mcp_server.app.tool_aed_waiting')
-    @patch('hkopenai.hk_health_mcp_server.app.tool_specialist_waiting_time_by_cluster')
-    @patch('hkopenai.hk_health_mcp_server.app.tool_pas_gopc_avg_quota')
+    @patch('hkopenai.hk_health_mcp_server.server.FastMCP')
+    @patch('hkopenai.hk_health_mcp_server.server.tool_aed_waiting')
+    @patch('hkopenai.hk_health_mcp_server.server.tool_specialist_waiting_time_by_cluster')
+    @patch('hkopenai.hk_health_mcp_server.server.tool_pas_gopc_avg_quota')
     def test_create_mcp_server(self, mock_tool_quota, mock_tool_specialist, mock_tool_aed, mock_fastmcp):
         # Setup mocks
         mock_server = mock.Mock()
