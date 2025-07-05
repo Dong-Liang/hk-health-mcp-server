@@ -1,16 +1,38 @@
+"""
+Module for testing the MCP server creation and tool functionality.
+This module contains unit tests to verify the behavior of the server setup.
+"""
+
 import unittest
 from unittest.mock import patch, Mock
 from hkopenai.hk_health_mcp_server.server import create_mcp_server
 
+
 class TestApp(unittest.TestCase):
-    @patch('hkopenai.hk_health_mcp_server.server.FastMCP')
-    @patch('hkopenai.hk_health_mcp_server.server.tool_aed_waiting')
-    @patch('hkopenai.hk_health_mcp_server.server.tool_specialist_waiting_time_by_cluster')
-    @patch('hkopenai.hk_health_mcp_server.server.tool_pas_gopc_avg_quota')
-    def test_create_mcp_server(self, mock_tool_pas_gopc_avg_quota, mock_tool_specialist_waiting_time_by_cluster, mock_tool_aed_waiting, mock_fastmcp):
+    """
+    Test class for verifying MCP server functionality.
+    This class contains tests to ensure the server and its tools are set up correctly.
+    """
+    @patch("hkopenai.hk_health_mcp_server.server.FastMCP")
+    @patch("hkopenai.hk_health_mcp_server.server.tool_aed_waiting")
+    @patch(
+        "hkopenai.hk_health_mcp_server.server.tool_specialist_waiting_time_by_cluster"
+    )
+    @patch("hkopenai.hk_health_mcp_server.server.tool_pas_gopc_avg_quota")
+    def test_create_mcp_server(
+        self,
+        mock_tool_pas_gopc_avg_quota,
+        mock_tool_specialist_waiting_time_by_cluster,
+        mock_tool_aed_waiting,
+        mock_fastmcp,
+    ):
+        """
+        Test the creation of the MCP server and its tool integrations.
+        Verifies that the server is initialized correctly and tools are properly decorated.
+        """
         # Setup mocks
         mock_server = Mock()
-        
+
         # Configure mock_server.tool to return a mock that acts as the decorator
         # This mock will then be called with the function to be decorated
         mock_server.tool.return_value = Mock()
@@ -27,19 +49,27 @@ class TestApp(unittest.TestCase):
         self.assertEqual(mock_server.tool.call_count, 3)
 
         # Get all decorated functions
-        decorated_funcs = {call.args[0].__name__: call.args[0] for call in mock_server.tool.return_value.call_args_list}
+        decorated_funcs = {
+            call.args[0].__name__: call.args[0]
+            for call in mock_server.tool.return_value.call_args_list
+        }
         self.assertEqual(len(decorated_funcs), 3)
 
         # Call each decorated function and verify that the correct underlying function is called
-        
-        decorated_funcs['get_aed_waiting_times'](lang="en")
+
+        decorated_funcs["get_aed_waiting_times"](lang="en")
         mock_tool_aed_waiting.get_aed_waiting_times.assert_called_once_with("en")
 
-        decorated_funcs['get_specialist_waiting_times'](lang="tc")
-        mock_tool_specialist_waiting_time_by_cluster.get_specialist_waiting_times.assert_called_once_with("tc")
+        decorated_funcs["get_specialist_waiting_times"](lang="tc")
+        mock_tool_specialist_waiting_time_by_cluster.get_specialist_waiting_times.assert_called_once_with(
+            "tc"
+        )
 
-        decorated_funcs['get_pas_gopc_avg_quota'](lang="en", district="Tuen Mun")
-        mock_tool_pas_gopc_avg_quota.get_pas_gopc_avg_quota.assert_called_once_with("en", "Tuen Mun")
+        decorated_funcs["get_pas_gopc_avg_quota"](lang="en", district="Tuen Mun")
+        mock_tool_pas_gopc_avg_quota.get_pas_gopc_avg_quota.assert_called_once_with(
+            "en", "Tuen Mun"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
