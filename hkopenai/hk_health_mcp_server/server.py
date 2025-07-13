@@ -3,7 +3,6 @@ Module for creating and running the HK OpenAI Health MCP Server.
 This server provides tools for accessing health-related data in Hong Kong.
 """
 
-import argparse
 from fastmcp import FastMCP
 from hkopenai.hk_health_mcp_server import (
     tool_aed_waiting,
@@ -79,7 +78,7 @@ def create_mcp_server():
     return mcp
 
 
-def main(args):
+def main(host: str, port: int, sse: bool):
     """
     Main function to run the MCP Server.
     Args:
@@ -87,8 +86,8 @@ def main(args):
     """
     server = create_mcp_server()
 
-    if args.sse:
-        server.run(transport="streamable-http", host=args.host, port=args.port)
+    if sse:
+        server.run(transport="streamable-http", host=host, port=port)
         print(f"MCP Server running in SSE mode on port {args.port}, bound to {args.host}")
     else:
         server.run()
