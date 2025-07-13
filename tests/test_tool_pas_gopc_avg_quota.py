@@ -5,9 +5,10 @@ This module contains unit tests to verify the behavior of the quota data retriev
 
 import unittest
 import unittest.mock as mock
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 import requests
 from hkopenai.hk_health_mcp_server import tool_pas_gopc_avg_quota
+from hkopenai.hk_health_mcp_server.tool_pas_gopc_avg_quota import _get_pas_gopc_avg_quota, register
 
 
 class TestPasGopcAvgQuotaTool(unittest.TestCase):
@@ -90,7 +91,7 @@ class TestPasGopcAvgQuotaTool(unittest.TestCase):
             ]
 
             # Test getting data for all districts
-            result = tool_pas_gopc_avg_quota.get_pas_gopc_avg_quota(lang="en")
+            result = _get_pas_gopc_avg_quota(lang="en")
 
             # Verify results
             self.assertEqual(len(result["data"]), 2)
@@ -136,7 +137,7 @@ class TestPasGopcAvgQuotaTool(unittest.TestCase):
             ]
 
             # Test getting data for a specific district
-            result = tool_pas_gopc_avg_quota.get_pas_gopc_avg_quota(
+            result = _get_pas_gopc_avg_quota(
                 lang="en", district="Tuen Mun"
             )
 
@@ -147,6 +148,43 @@ class TestPasGopcAvgQuotaTool(unittest.TestCase):
             self.assertEqual(
                 result["message"], "Retrieved data for 1 clinics in Tuen Mun"
             )
+
+    def test_register_tool(self):
+        """
+        Test the registration of the get_pas_gopc_avg_quota tool.
+
+        This test verifies that the register function correctly registers the tool
+        with the FastMCP server and that the registered tool calls the underlying
+        _get_pas_gopc_avg_quota function.
+        """
+        mock_mcp = MagicMock()
+
+        # Call the register function
+        tool_pas_gopc_avg_quota.register(mock_mcp)
+
+        # Verify that mcp.tool was called with the correct description
+        mock_mcp.tool.assert_called_once_with(
+            description="Get average number of general outpatient clinic quotas for the preceding 4 weeks across 18 districts in Hong Kong"
+        )
+
+        # Get the mock that represents the decorator returned by mcp.tool
+        mock_decorator = mock_mcp.tool.return_value
+
+        # Verify that the mock decorator was called once (i.e., the function was decorated)
+        mock_decorator.assert_called_once()
+
+        # The decorated function is the first argument of the first call to the mock_decorator
+        decorated_function = mock_decorator.call_args[0][0]
+
+        # Verify the name of the decorated function
+        self.assertEqual(decorated_function.__name__, "get_pas_gopc_avg_quota")
+
+        # Call the decorated function and verify it calls _get_pas_gopc_avg_quota
+        with patch(
+            "hkopenai.hk_health_mcp_server.tool_pas_gopc_avg_quota._get_pas_gopc_avg_quota"
+        ) as mock_get_pas_gopc_avg_quota:
+            decorated_function(lang="en", district="Tuen Mun")
+            mock_get_pas_gopc_avg_quota.assert_called_once_with("en", "Tuen Mun")
 
 
 if __name__ == "__main__":

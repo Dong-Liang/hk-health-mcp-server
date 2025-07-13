@@ -5,8 +5,10 @@ for the preceding 4 weeks across districts in Hong Kong from Hospital Authority.
 
 import json
 import requests
-from typing import List, Dict
+from typing import List, Dict, Optional
 from datetime import datetime
+from pydantic import Field
+from typing_extensions import Annotated
 
 
 def fetch_pas_gopc_avg_quota_data(lang: str = "en") -> List[Dict]:
@@ -28,7 +30,32 @@ def fetch_pas_gopc_avg_quota_data(lang: str = "en") -> List[Dict]:
     return data
 
 
-def get_pas_gopc_avg_quota(lang: str = "en", district: str = "") -> Dict:
+from pydantic import Field
+from typing_extensions import Annotated
+
+def register(mcp):
+    """Registers the general outpatient clinic quotas tool with the FastMCP server."""
+    @mcp.tool(
+        description="Get average number of general outpatient clinic quotas for the preceding 4 weeks across 18 districts in Hong Kong"
+    )
+    def get_pas_gopc_avg_quota(
+        lang: Annotated[
+            Optional[str],
+            Field(
+                description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English",
+                json_schema_extra={"enum": ["en", "tc", "sc"]},
+            ),
+        ] = "en",
+        district: Annotated[
+            Optional[str],
+            Field(
+                description="Optional: Filter by district name (e.g., 'Tuen Mun'). If not provided, data for all districts will be returned."
+            ),
+        ] = "",
+    ) -> Dict:
+        return _get_pas_gopc_avg_quota(lang, district)
+
+def _get_pas_gopc_avg_quota(lang: str = "en", district: str = "") -> Dict:
     """Get average number of general outpatient clinic quotas for the preceding 4 weeks
 
     Args:

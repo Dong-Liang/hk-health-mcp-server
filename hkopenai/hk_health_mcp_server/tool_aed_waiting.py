@@ -5,8 +5,10 @@ from Hospital Authority in Hong Kong.
 
 import json
 import urllib.request
-from typing import List, Dict
+from typing import List, Dict, Optional
 from datetime import datetime
+from pydantic import Field
+from typing_extensions import Annotated
 
 
 def fetch_aed_waiting_data(lang: str = "en") -> List[Dict]:
@@ -26,7 +28,28 @@ def fetch_aed_waiting_data(lang: str = "en") -> List[Dict]:
     return data
 
 
-def get_aed_waiting_times(lang: str = "en") -> Dict:
+def register(mcp):
+    """Registers the AED waiting times tool with the FastMCP server."""
+    @mcp.tool(
+        description="Get current Accident and Emergency Department waiting times by hospital in Hong Kong"
+    )
+    def get_aed_waiting_times(
+        lang: Annotated[
+            Optional[str],
+            Field(
+                description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English",
+                json_schema_extra={"enum": ["en", "tc", "sc"]},
+            ),
+        ] = "en",
+    ) -> Dict:
+        """Get current AED waiting times
+
+        Args:
+            lang: Language code (en/tc/sc) for data format
+        """
+        return _get_aed_waiting_times(lang)
+
+def _get_aed_waiting_times(lang: str = "en") -> Dict:
     """Get current AED waiting times
 
     Args:

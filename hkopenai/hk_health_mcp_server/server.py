@@ -23,57 +23,9 @@ def create_mcp_server():
     """
     mcp = FastMCP(name="HK OpenAI Health Server")
 
-    @mcp.tool(
-        description="Get current Accident and Emergency Department waiting times by hospital in Hong Kong"
-    )
-    def get_aed_waiting_times(
-        lang: Annotated[
-            Optional[str],
-            Field(
-                description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English",
-                json_schema_extra={"enum": ["en", "tc", "sc"]},
-            ),
-        ] = "en",
-    ) -> Dict:
-        return tool_aed_waiting.get_aed_waiting_times(lang or "en")
-
-    @mcp.tool(
-        description="Get current waiting times for new case bookings for specialist outpatient services by specialty and cluster in Hong Kong"
-    )
-    def get_specialist_waiting_times(
-        lang: Annotated[
-            Optional[str],
-            Field(
-                description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English",
-                json_schema_extra={"enum": ["en", "tc", "sc"]},
-            ),
-        ] = "en",
-    ) -> Dict:
-        return tool_specialist_waiting_time_by_cluster.get_specialist_waiting_times(
-            lang or "en"
-        )
-
-    @mcp.tool(
-        description="Get average number of general outpatient clinic quotas for the preceding 4 weeks across 18 districts in Hong Kong"
-    )
-    def get_pas_gopc_avg_quota(
-        lang: Annotated[
-            Optional[str],
-            Field(
-                description="Language (en/tc/sc) English, Traditional Chinese, Simplified Chinese. Default English",
-                json_schema_extra={"enum": ["en", "tc", "sc"]},
-            ),
-        ] = "en",
-        district: Annotated[
-            Optional[str],
-            Field(
-                description="Optional: Filter by district name (e.g., 'Tuen Mun'). If not provided, data for all districts will be returned."
-            ),
-        ] = "",
-    ) -> Dict:
-        return tool_pas_gopc_avg_quota.get_pas_gopc_avg_quota(
-            lang or "en", district or ""
-        )
+    tool_aed_waiting.register(mcp)
+    tool_specialist_waiting_time_by_cluster.register(mcp)
+    tool_pas_gopc_avg_quota.register(mcp)
 
     return mcp
 
