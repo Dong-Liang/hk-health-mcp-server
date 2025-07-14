@@ -1,8 +1,19 @@
+"""
+Module for testing the specialist outpatient waiting times data fetching functionality.
+This module contains unit tests to verify the behavior of the data retrieval.
+"""
+
+from datetime import datetime
+import json
+
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
-from hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster import fetch_specialist_waiting_data, _get_specialist_waiting_times, register
-import json
-from datetime import datetime
+
+from hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster import (
+    fetch_specialist_waiting_data,
+    _get_specialist_waiting_times,
+    register,
+)
 
 
 class TestSpecialistWaitingTimes(unittest.TestCase):
@@ -10,6 +21,7 @@ class TestSpecialistWaitingTimes(unittest.TestCase):
     Test class for verifying specialist outpatient waiting times data fetching.
     This class contains tests to ensure the data retrieval functions correctly.
     """
+
     JSON_DATA = """[
     {
       "cluster": "Hong Kong East Cluster",
@@ -55,14 +67,18 @@ class TestSpecialistWaitingTimes(unittest.TestCase):
         self.assertEqual(result[0]["specialty"], "Medicine")
         self.assertEqual(result[0]["value"], "10")
 
-    @patch("hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster.fetch_specialist_waiting_data")
+    @patch(
+        "hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster.fetch_specialist_waiting_data"
+    )
     def test_get_specialist_waiting_times(self, mock_fetch_specialist_waiting_data):
         """
         Test the retrieval of specialist waiting times.
         Verifies that the function calls the data fetcher and returns the data with a timestamp.
         """
         mock_fetch_specialist_waiting_data.return_value = json.loads(self.JSON_DATA)
-        with patch("hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster.datetime") as mock_datetime:
+        with patch(
+            "hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster.datetime"
+        ) as mock_datetime:
             mock_datetime.now.return_value = datetime(2025, 7, 14, 10, 0, 0)
             mock_datetime.isoformat.return_value = "2025-07-14T10:00:00"
             result = _get_specialist_waiting_times(lang="en")

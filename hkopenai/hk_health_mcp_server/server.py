@@ -9,15 +9,13 @@ from hkopenai.hk_health_mcp_server import (
     tool_specialist_waiting_time_by_cluster,
     tool_pas_gopc_avg_quota,
 )
-from typing import Dict, Annotated, Optional
-from pydantic import Field
 
 
 def create_mcp_server():
     """
     Create and configure the MCP server for HK OpenAI Health services.
     This function initializes the server with necessary tools for health data access.
-    
+
     Returns:
         FastMCP: Configured MCP server instance with health tools registered.
     """
@@ -40,7 +38,9 @@ def main(host: str, port: int, sse: bool):
 
     if sse:
         server.run(transport="streamable-http", host=host, port=port)
-        print(f"MCP Server running in SSE mode on port {args.port}, bound to {args.host}")
+        print(
+            f"MCP Server running in SSE mode on port {port}, bound to {host}"
+        )
     else:
         server.run()
         print("MCP Server running in stdio mode")

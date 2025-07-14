@@ -3,10 +3,10 @@ Module for fetching average number of general outpatient clinic quotas
 for the preceding 4 weeks across districts in Hong Kong from Hospital Authority.
 """
 
-import json
-import requests
-from typing import List, Dict, Optional
 from datetime import datetime
+from typing import Dict, List, Optional
+import requests
+
 from pydantic import Field
 from typing_extensions import Annotated
 
@@ -30,11 +30,12 @@ def fetch_pas_gopc_avg_quota_data(lang: str = "en") -> List[Dict]:
     return data
 
 
-from pydantic import Field
-from typing_extensions import Annotated
+
+
 
 def register(mcp):
     """Registers the general outpatient clinic quotas tool with the FastMCP server."""
+
     @mcp.tool(
         description="Get average number of general outpatient clinic quotas for the preceding 4 weeks across 18 districts in Hong Kong"
     )
@@ -54,6 +55,7 @@ def register(mcp):
         ] = "",
     ) -> Dict:
         return _get_pas_gopc_avg_quota(lang, district)
+
 
 def _get_pas_gopc_avg_quota(lang: str = "en", district: str = "") -> Dict:
     """Get average number of general outpatient clinic quotas for the preceding 4 weeks

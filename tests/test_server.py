@@ -13,6 +13,7 @@ class TestApp(unittest.TestCase):
     Test class for verifying MCP server functionality.
     This class contains tests to ensure the server and its tools are set up correctly.
     """
+
     @patch("hkopenai.hk_health_mcp_server.server.FastMCP")
     @patch("hkopenai.hk_health_mcp_server.server.tool_aed_waiting")
     @patch(
@@ -46,7 +47,9 @@ class TestApp(unittest.TestCase):
         self.assertEqual(server, mock_server)
 
         mock_tool_aed_waiting.register.assert_called_once_with(mock_server)
-        mock_tool_specialist_waiting_time_by_cluster.register.assert_called_once_with(mock_server)
+        mock_tool_specialist_waiting_time_by_cluster.register.assert_called_once_with(
+            mock_server
+        )
         mock_tool_pas_gopc_avg_quota.register.assert_called_once_with(mock_server)
 
 

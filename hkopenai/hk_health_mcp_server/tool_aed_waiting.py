@@ -30,6 +30,7 @@ def fetch_aed_waiting_data(lang: str = "en") -> List[Dict]:
 
 def register(mcp):
     """Registers the AED waiting times tool with the FastMCP server."""
+
     @mcp.tool(
         description="Get current Accident and Emergency Department waiting times by hospital in Hong Kong"
     )
@@ -48,6 +49,7 @@ def register(mcp):
             lang: Language code (en/tc/sc) for data format
         """
         return _get_aed_waiting_times(lang)
+
 
 def _get_aed_waiting_times(lang: str = "en") -> Dict:
     """Get current AED waiting times

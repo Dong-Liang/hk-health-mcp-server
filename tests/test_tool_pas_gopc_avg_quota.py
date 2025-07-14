@@ -6,9 +6,11 @@ This module contains unit tests to verify the behavior of the quota data retriev
 import unittest
 import unittest.mock as mock
 from unittest.mock import patch, MagicMock
-import requests
+
 from hkopenai.hk_health_mcp_server import tool_pas_gopc_avg_quota
-from hkopenai.hk_health_mcp_server.tool_pas_gopc_avg_quota import _get_pas_gopc_avg_quota, register
+from hkopenai.hk_health_mcp_server.tool_pas_gopc_avg_quota import (
+    _get_pas_gopc_avg_quota,
+)
 
 
 class TestPasGopcAvgQuotaTool(unittest.TestCase):
@@ -16,6 +18,7 @@ class TestPasGopcAvgQuotaTool(unittest.TestCase):
     Test class for verifying general outpatient clinic quota data fetching.
     This class contains tests to ensure the data retrieval functions correctly.
     """
+
     @patch("requests.get")
     def test_fetch_pas_gopc_avg_quota_data(self, mock_get):
         """
@@ -137,9 +140,7 @@ class TestPasGopcAvgQuotaTool(unittest.TestCase):
             ]
 
             # Test getting data for a specific district
-            result = _get_pas_gopc_avg_quota(
-                lang="en", district="Tuen Mun"
-            )
+            result = _get_pas_gopc_avg_quota(lang="en", district="Tuen Mun")
 
             # Verify results
             self.assertEqual(len(result["data"]), 1)

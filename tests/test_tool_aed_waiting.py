@@ -3,11 +3,17 @@ Module for testing the AED waiting times data fetching functionality.
 This module contains unit tests to verify the behavior of the AED data retrieval.
 """
 
+from datetime import datetime
+import json
+
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
-from hkopenai.hk_health_mcp_server.tool_aed_waiting import fetch_aed_waiting_data, _get_aed_waiting_times, register
-import json
-from datetime import datetime
+
+from hkopenai.hk_health_mcp_server.tool_aed_waiting import (
+    fetch_aed_waiting_data,
+    _get_aed_waiting_times,
+    register,
+)
 
 
 class TestAEDWaitingTimes(unittest.TestCase):
@@ -15,6 +21,7 @@ class TestAEDWaitingTimes(unittest.TestCase):
     Test class for verifying AED waiting times data fetching.
     This class contains tests to ensure the data retrieval functions correctly.
     """
+
     JSON_DATA = """{
     "waitTime": [
       {
@@ -72,7 +79,9 @@ class TestAEDWaitingTimes(unittest.TestCase):
         Verifies that the function calls the data fetcher and returns the data with a timestamp.
         """
         mock_fetch_aed_waiting_data.return_value = json.loads(self.JSON_DATA)
-        with patch("hkopenai.hk_health_mcp_server.tool_aed_waiting.datetime") as mock_datetime:
+        with patch(
+            "hkopenai.hk_health_mcp_server.tool_aed_waiting.datetime"
+        ) as mock_datetime:
             mock_datetime.now.return_value = datetime(2025, 7, 14, 10, 0, 0)
             mock_datetime.isoformat.return_value = "2025-07-14T10:00:00"
             result = _get_aed_waiting_times(lang="en")
