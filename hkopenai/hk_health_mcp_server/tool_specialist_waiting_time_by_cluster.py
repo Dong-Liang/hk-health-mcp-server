@@ -12,7 +12,7 @@ from pydantic import Field
 from typing_extensions import Annotated
 
 
-def fetch_specialist_waiting_data(lang: str = "en") -> List[Dict]:
+def fetch_specialist_waiting_data(lang: Optional[str] = "en") -> List[Dict]:
     """Fetch and parse specialist outpatient waiting time data from Hospital Authority
 
     Args:
@@ -46,11 +46,11 @@ def register(mcp):
         return _get_specialist_waiting_times(lang)
 
 
-def _get_specialist_waiting_times(lang: str = "en") -> Dict:
+def _get_specialist_waiting_times(lang: Optional[str] = "en") -> Dict:
     """Get current waiting times for new case bookings for specialist outpatient services
 
     Args:
         lang: Language code (en/tc/sc) for data format
     """
     data = fetch_specialist_waiting_data(lang)
-    return {"data": data, "last_updated": datetime.now().isoformat()}
+    return {"data": data, "last_updated": datetime.datetime.now().isoformat()}

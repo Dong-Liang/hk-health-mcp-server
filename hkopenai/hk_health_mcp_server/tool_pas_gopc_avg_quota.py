@@ -11,7 +11,7 @@ from pydantic import Field
 from typing_extensions import Annotated
 
 
-def fetch_pas_gopc_avg_quota_data(lang: str = "en") -> List[Dict]:
+def fetch_pas_gopc_avg_quota_data(lang: Optional[str] = "en") -> List[Dict]:
     """Fetch and parse average number of general outpatient clinic quota data for the preceding 4 weeks from Hospital Authority
 
     Args:
@@ -57,7 +57,7 @@ def register(mcp):
         return _get_pas_gopc_avg_quota(lang, district)
 
 
-def _get_pas_gopc_avg_quota(lang: str = "en", district: str = "") -> Dict:
+def _get_pas_gopc_avg_quota(lang: Optional[str] = "en", district: Optional[str] = "") -> Dict:
     """Get average number of general outpatient clinic quotas for the preceding 4 weeks
 
     Args:

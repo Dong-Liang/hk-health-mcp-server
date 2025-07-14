@@ -77,10 +77,11 @@ class TestSpecialistWaitingTimes(unittest.TestCase):
         """
         mock_fetch_specialist_waiting_data.return_value = json.loads(self.JSON_DATA)
         with patch(
-            "hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster.datetime"
-        ) as mock_datetime:
-            mock_datetime.now.return_value = datetime(2025, 7, 14, 10, 0, 0)
-            mock_datetime.isoformat.return_value = "2025-07-14T10:00:00"
+            "hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster.datetime.datetime"
+        ) as mock_dt_class:
+            mock_dt_instance = MagicMock()
+            mock_dt_instance.isoformat.return_value = "2025-07-14T10:00:00"
+            mock_dt_class.now.return_value = mock_dt_instance
             result = _get_specialist_waiting_times(lang="en")
             mock_fetch_specialist_waiting_data.assert_called_once_with("en")
             self.assertIn("data", result)

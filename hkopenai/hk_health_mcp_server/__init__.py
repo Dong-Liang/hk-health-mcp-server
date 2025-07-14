@@ -1,6 +1,7 @@
 """Hong Kong Health MCP Server package."""
 
-from .server import main
+from hkopenai_common.cli_utils import cli_main
+from .server import create_mcp_server
 
-__version__ = "0.1.0"
-__all__ = ["main"]
+if __name__ == "__main__":
+    cli_main(create_mcp_server, "HK Health MCP Server")

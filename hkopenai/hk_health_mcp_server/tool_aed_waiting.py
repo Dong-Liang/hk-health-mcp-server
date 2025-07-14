@@ -11,7 +11,7 @@ from pydantic import Field
 from typing_extensions import Annotated
 
 
-def fetch_aed_waiting_data(lang: str = "en") -> List[Dict]:
+def fetch_aed_waiting_data(lang: Optional[str] = "en") -> Dict:
     """Fetch and parse AED waiting time data from Hospital Authority
 
     Args:
@@ -51,7 +51,7 @@ def register(mcp):
         return _get_aed_waiting_times(lang)
 
 
-def _get_aed_waiting_times(lang: str = "en") -> Dict:
+def _get_aed_waiting_times(lang: Optional[str] = "en") -> Dict:
     """Get current AED waiting times
 
     Args:
