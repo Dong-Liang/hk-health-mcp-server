@@ -15,23 +15,17 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-        
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
 
     - name: Install dependencies 2
       run: |        
-        pip install hkopenai_common -v  # Add -v for verbose output
-
-    - name: Install dependencies 3
-      run: |
-        pip install -e .
-
-    - name: List site-packages contents
-      run: |
+        pip install hkopenai_common
         python -c "import site; print(site.getsitepackages()[0])"
         ls -l $(python -c "import site; print(site.getsitepackages()[0])")/hkopenai_common
+        pip install -e .
 
     - name: Run tests with coverage
       id: coverage
