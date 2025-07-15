@@ -20,6 +20,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .
 
+    - name: List site-packages contents
+      run: |
+        python -c "import site; print(site.getsitepackages()[0])"
+        ls -l $(python -c "import site; print(site.getsitepackages()[0])")/hkopenai_common
 
     - name: Run tests with coverage
       id: coverage
