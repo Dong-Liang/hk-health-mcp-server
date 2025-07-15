@@ -32,7 +32,7 @@ jobs:
       run: |
         source venv/bin/activate
         pip freeze | grep hkopenai_common
-        ls -l venv/lib/python*/site-packages/hkopenai_common
+        ls -l venv/lib/python*/site-packages/
 
     - name: Run tests with coverage
       id: coverage
