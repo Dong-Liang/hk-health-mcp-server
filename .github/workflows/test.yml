@@ -25,7 +25,8 @@ jobs:
       run: |
         source venv/bin/activate
         python -m pip install --upgrade pip
-        pip install hkopenai_common
+        curl -L https://files.pythonhosted.org/packages/f8/a8/a288b5d711eaaa1249fcd7629af0def9e609868b384b8994f6cc93136975/hkopenai_common-0.1.3-py3-none-any.whl -o hkopenai_common.whl
+        unzip hkopenai_common.whl -d venv/lib/python*/site-packages/
         pip install -e .
 
     - name: Verify hkopenai_common installation
