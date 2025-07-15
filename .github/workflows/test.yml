@@ -16,20 +16,28 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
+    - name: Create and activate virtual environment
       run: |
-        python -m pip install --upgrade pip
+        python -m venv venv
+        source venv/bin/activate
 
-    - name: Install dependencies 2
-      run: |        
+    - name: Install dependencies in virtual environment
+      run: |
+        source venv/bin/activate
+        python -m pip install --upgrade pip
         pip install hkopenai_common
-        python -c "import site; print(site.getsitepackages()[0])"
-        ls -l $(python -c "import site; print(site.getsitepackages()[0])")/hkopenai_common
         pip install -e .
+
+    - name: Verify hkopenai_common installation
+      run: |
+        source venv/bin/activate
+        pip freeze | grep hkopenai_common
+        ls -l venv/lib/python*/site-packages/hkopenai_common
 
     - name: Run tests with coverage
       id: coverage
       run: |
+        source venv/bin/activate
         pytest
 
     - name: Run live tests
@@ -37,4 +45,5 @@ jobs:
       env:
         RUN_LIVE_TESTS: 'true'
       run: |
+        source venv/bin/activate
         pytest -m live --reruns 5 --reruns-delay 2 --ignore=tests/test_server.py
