@@ -9,11 +9,12 @@ import json
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
 
-from hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster import (
-    fetch_specialist_waiting_data,
+from hkopenai.hk_health_mcp_server.tools.specialist_waiting_time_by_cluster import (
     _get_specialist_waiting_times,
     register,
 )
+
+from hkopenai_common.json_utils import fetch_json_data
 
 
 class TestSpecialistWaitingTimes(unittest.TestCase):
@@ -39,51 +40,27 @@ class TestSpecialistWaitingTimes(unittest.TestCase):
     }
 ]"""
 
-    def setUp(self):
-        self.mock_urlopen = patch("urllib.request.urlopen").start()
-        self.mock_urlopen.return_value = mock_open(
-            read_data=self.JSON_DATA.encode("utf-8")
-        )()
-        self.addCleanup(patch.stopall)
+    
 
-    @patch("urllib.request.urlopen")
-    def test_fetch_specialist_waiting_data(self, mock_urlopen):
-        """
-        Test the fetching of specialist waiting time data.
-        Verifies that the data is correctly retrieved and parsed from the mocked response.
-        """
-        # Mock the URL response
-        mock_urlopen.return_value = mock_open(
-            read_data=self.JSON_DATA.encode("utf-8")
-        )()
+    
 
-        # Call the function
-        result = fetch_specialist_waiting_data()
-
-        # Verify the result
-        self.assertIsInstance(result, list)
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result[0]["cluster"], "Hong Kong East Cluster")
-        self.assertEqual(result[0]["specialty"], "Medicine")
-        self.assertEqual(result[0]["value"], "10")
-
-    @patch(
-        "hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster.fetch_specialist_waiting_data"
-    )
-    def test_get_specialist_waiting_times(self, mock_fetch_specialist_waiting_data):
+    @patch("hkopenai.hk_health_mcp_server.tools.specialist_waiting_time_by_cluster.fetch_json_data")
+    def test_get_specialist_waiting_times(self, mock_fetch_json_data):
         """
         Test the retrieval of specialist waiting times.
         Verifies that the function calls the data fetcher and returns the data with a timestamp.
         """
-        mock_fetch_specialist_waiting_data.return_value = json.loads(self.JSON_DATA)
+        mock_fetch_json_data.return_value = json.loads(self.JSON_DATA)
         with patch(
-            "hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster.datetime.datetime"
+            "hkopenai.hk_health_mcp_server.tools.specialist_waiting_time_by_cluster.datetime.datetime"
         ) as mock_dt_class:
             mock_dt_instance = MagicMock()
             mock_dt_instance.isoformat.return_value = "2025-07-14T10:00:00"
             mock_dt_class.now.return_value = mock_dt_instance
             result = _get_specialist_waiting_times(lang="en")
-            mock_fetch_specialist_waiting_data.assert_called_once_with("en")
+            mock_fetch_json_data.assert_called_once_with(
+                "https://www.ha.org.hk/opendata/sop/sop-waiting-time-en.json"
+            )
             self.assertIn("data", result)
             self.assertIn("last_updated", result)
             self.assertEqual(result["data"], json.loads(self.JSON_DATA))
@@ -121,7 +98,7 @@ class TestSpecialistWaitingTimes(unittest.TestCase):
 
         # Call the decorated function and verify it calls _get_specialist_waiting_times
         with patch(
-            "hkopenai.hk_health_mcp_server.tool_specialist_waiting_time_by_cluster._get_specialist_waiting_times"
+            "hkopenai.hk_health_mcp_server.tools.specialist_waiting_time_by_cluster._get_specialist_waiting_times"
         ) as mock_get_specialist_waiting_times:
             decorated_function(lang="en")
             mock_get_specialist_waiting_times.assert_called_once_with("en")

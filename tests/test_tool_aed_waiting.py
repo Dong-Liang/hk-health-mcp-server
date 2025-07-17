@@ -9,8 +9,7 @@ import json
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
 
-from hkopenai.hk_health_mcp_server.tool_aed_waiting import (
-    fetch_aed_waiting_data,
+from hkopenai.hk_health_mcp_server.tools.aed_waiting import (
     _get_aed_waiting_times,
     register,
 )
@@ -40,52 +39,26 @@ class TestAEDWaitingTimes(unittest.TestCase):
     "updateTime": "10/6/2025 9:45pm"
   }"""
 
-    def setUp(self):
-        self.mock_urlopen = patch("urllib.request.urlopen").start()
-        self.mock_urlopen.return_value = mock_open(
-            read_data=self.JSON_DATA.encode("utf-8")
-        )()
-        self.addCleanup(patch.stopall)
+    
 
-    @patch("urllib.request.urlopen")
-    def test_fetch_aed_waiting_data(self, mock_urlopen):
-        """
-        Test the fetching of AED waiting time data.
-        Verifies that the data is correctly retrieved and parsed from the mocked response.
-        """
-        # Mock the URL response
-        mock_urlopen.return_value = mock_open(
-            read_data=self.JSON_DATA.encode("utf-8")
-        )()
+    
 
-        # Call the function
-        result = fetch_aed_waiting_data()
-
-        # Verify the result
-        self.assertIsInstance(result, dict)
-        self.assertIn("waitTime", result)
-        self.assertIn("updateTime", result)
-        self.assertEqual(len(result["waitTime"]), 3)
-        self.assertEqual(
-            result["waitTime"][0]["hospName"], "Alice Ho Miu Ling Nethersole Hospital"
-        )
-        self.assertEqual(result["waitTime"][0]["topWait"], "Over 4 hours")
-        self.assertEqual(result["updateTime"], "10/6/2025 9:45pm")
-
-    @patch("hkopenai.hk_health_mcp_server.tool_aed_waiting.fetch_aed_waiting_data")
-    def test_get_aed_waiting_times(self, mock_fetch_aed_waiting_data):
+    @patch("hkopenai.hk_health_mcp_server.tools.aed_waiting.fetch_json_data")
+    def test_get_aed_waiting_times(self, mock_fetch_json_data):
         """
         Test the retrieval of AED waiting times.
         Verifies that the function calls the data fetcher and returns the data with a timestamp.
         """
-        mock_fetch_aed_waiting_data.return_value = json.loads(self.JSON_DATA)
+        mock_fetch_json_data.return_value = json.loads(self.JSON_DATA)
         with patch(
-            "hkopenai.hk_health_mcp_server.tool_aed_waiting.datetime"
+            "hkopenai.hk_health_mcp_server.tools.aed_waiting.datetime"
         ) as mock_datetime:
             mock_datetime.now.return_value = datetime(2025, 7, 14, 10, 0, 0)
             mock_datetime.isoformat.return_value = "2025-07-14T10:00:00"
             result = _get_aed_waiting_times(lang="en")
-            mock_fetch_aed_waiting_data.assert_called_once_with("en")
+            mock_fetch_json_data.assert_called_once_with(
+                "https://www.ha.org.hk/opendata/aed/aedwtdata-en.json"
+            )
             self.assertIn("data", result)
             self.assertIn("last_updated", result)
             self.assertEqual(result["data"], json.loads(self.JSON_DATA))
@@ -123,7 +96,7 @@ class TestAEDWaitingTimes(unittest.TestCase):
 
         # Call the decorated function and verify it calls _get_aed_waiting_times
         with patch(
-            "hkopenai.hk_health_mcp_server.tool_aed_waiting._get_aed_waiting_times"
+            "hkopenai.hk_health_mcp_server.tools.aed_waiting._get_aed_waiting_times"
         ) as mock_get_aed_waiting_times:
             decorated_function(lang="en")
             mock_get_aed_waiting_times.assert_called_once_with("en")

@@ -3,29 +3,14 @@ Module for fetching waiting times for new case bookings for specialist outpatien
 by specialty and cluster in Hong Kong from Hospital Authority.
 """
 
-import json
-import urllib.request
-import datetime
 from typing import Dict, List, Optional
-
+import datetime
 from pydantic import Field
 from typing_extensions import Annotated
+from hkopenai_common.json_utils import fetch_json_data
 
 
-def fetch_specialist_waiting_data(lang: Optional[str] = "en") -> List[Dict]:
-    """Fetch and parse specialist outpatient waiting time data from Hospital Authority
 
-    Args:
-        lang: Language code (en/tc/sc) for data format
-
-    Returns:
-        List of specialist waiting times with cluster, specialty, category, description, and value
-    """
-    url = f"https://www.ha.org.hk/opendata/sop/sop-waiting-time-{lang}.json"
-    response = urllib.request.urlopen(url)
-    data = json.loads(response.read().decode("utf-8"))
-
-    return data
 
 
 def register(mcp):
@@ -52,5 +37,8 @@ def _get_specialist_waiting_times(lang: Optional[str] = "en") -> Dict:
     Args:
         lang: Language code (en/tc/sc) for data format
     """
-    data = fetch_specialist_waiting_data(lang)
+    url = f"https://www.ha.org.hk/opendata/sop/sop-waiting-time-{lang}.json"
+    data = fetch_json_data(url)
+    if "error" in data:
+        return {"type": "Error", "error": data["error"]}
     return {"data": data, "last_updated": datetime.datetime.now().isoformat()}

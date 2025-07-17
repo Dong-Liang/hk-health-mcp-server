@@ -5,7 +5,7 @@ This module contains unit tests to verify the behavior of the server setup.
 
 import unittest
 from unittest.mock import patch, Mock
-from hkopenai.hk_health_mcp_server.server import create_mcp_server
+from hkopenai.hk_health_mcp_server import server
 
 
 class TestApp(unittest.TestCase):
@@ -15,11 +15,11 @@ class TestApp(unittest.TestCase):
     """
 
     @patch("hkopenai.hk_health_mcp_server.server.FastMCP")
-    @patch("hkopenai.hk_health_mcp_server.server.tool_aed_waiting")
+    @patch("hkopenai.hk_health_mcp_server.tools.aed_waiting.register")
     @patch(
-        "hkopenai.hk_health_mcp_server.server.tool_specialist_waiting_time_by_cluster"
+        "hkopenai.hk_health_mcp_server.tools.specialist_waiting_time_by_cluster.register"
     )
-    @patch("hkopenai.hk_health_mcp_server.server.tool_pas_gopc_avg_quota")
+    @patch("hkopenai.hk_health_mcp_server.tools.pas_gopc_avg_quota.register")
     def test_create_mcp_server(
         self,
         mock_tool_pas_gopc_avg_quota,
@@ -40,17 +40,17 @@ class TestApp(unittest.TestCase):
         mock_fastmcp.return_value = mock_server
 
         # Test server creation
-        server = create_mcp_server()
+        mcp_instance = server()
 
         # Verify server creation
-        mock_fastmcp.assert_called_once()
-        self.assertEqual(server, mock_server)
+        mock_fastmcp.assert_called_once_with(name="HK OpenAI Health Server")
+        self.assertEqual(mcp_instance, mock_server)
 
-        mock_tool_aed_waiting.register.assert_called_once_with(mock_server)
-        mock_tool_specialist_waiting_time_by_cluster.register.assert_called_once_with(
+        mock_tool_aed_waiting.assert_called_once_with(mock_server)
+        mock_tool_specialist_waiting_time_by_cluster.assert_called_once_with(
             mock_server
         )
-        mock_tool_pas_gopc_avg_quota.register.assert_called_once_with(mock_server)
+        mock_tool_pas_gopc_avg_quota.assert_called_once_with(mock_server)
 
 
 if __name__ == "__main__":
